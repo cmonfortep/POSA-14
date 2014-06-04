@@ -24,12 +24,16 @@ class SimpleAtomicLong
      * The ReentrantReadWriteLock used to serialize access to mValue.
      */
     // TODO - replace the null with the appropriate initialization:
+    private final ReentrantReadWriteLock mRWLock = new ReentrantReadWriteLock();
 
     /**
      * Creates a new SimpleAtomicLong with the given initial value.
      */
     public SimpleAtomicLong(long initialValue) {
         // TODO - you fill in here
+    	mRWLock.writeLock().lock();
+    	mValue=initialValue;
+    	mRWLock.writeLock().unlock();
     }
 
     /**
@@ -38,7 +42,13 @@ class SimpleAtomicLong
      * @returns The current value
      */
     public long get() {
+    	long value;
         // TODO - you fill in here
+        mRWLock.readLock().lock();
+        value=mValue;
+        mRWLock.readLock().unlock();
+        
+        return value;
     }
 
     /**
@@ -47,7 +57,15 @@ class SimpleAtomicLong
      * @returns the updated value
      */
     public long decrementAndGet() {
+        long value = 0;
+
         // TODO - you fill in here
+        mRWLock.writeLock().lock();
+        mValue--;
+        value=mValue;
+        mRWLock.writeLock().unlock();
+        
+        return value;
     }
 
     /**
@@ -56,7 +74,15 @@ class SimpleAtomicLong
      * @returns the previous value
      */
     public long getAndIncrement() {
+        long value = 0;
+
         // TODO - you fill in here
+        mRWLock.writeLock().lock();
+        value=mValue;
+        mValue++;
+        mRWLock.writeLock().unlock();
+
+        return value;
     }
 
     /**
@@ -65,7 +91,15 @@ class SimpleAtomicLong
      * @returns the previous value
      */
     public long getAndDecrement() {
+        long value = 0;
+
         // TODO - you fill in here
+        mRWLock.writeLock().lock();
+        value=mValue;
+        mValue--;
+        mRWLock.writeLock().unlock();
+
+        return value;
     }
 
     /**
@@ -74,7 +108,15 @@ class SimpleAtomicLong
      * @returns the updated value
      */
     public long incrementAndGet() {
+        long value = 0;
+
         // TODO - you fill in here
+        mRWLock.writeLock().lock();
+        mValue++;
+        value=mValue;
+        mRWLock.writeLock().unlock();
+
+        return value;
     }
 }
 

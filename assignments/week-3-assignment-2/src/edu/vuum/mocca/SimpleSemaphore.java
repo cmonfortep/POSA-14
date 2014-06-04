@@ -18,22 +18,28 @@ public class SimpleSemaphore {
      * Define a ReentrantLock to protect the critical section.
      */
     // TODO - you fill in here
+	private ReentrantLock lock;
 
     /**
      * Define a Condition that waits while the number of permits is 0.
      */
     // TODO - you fill in here
+	private Condition isZero;
 
     /**
      * Define a count of the number of available permits.
      */
     // TODO - you fill in here.  Make sure that this data member will
     // ensure its values aren't cached by multiple Threads..
+	int availablePermits;
 
     public SimpleSemaphore(int permits, boolean fair) {
         // TODO - you fill in here to initialize the SimpleSemaphore,
         // making sure to allow both fair and non-fair Semaphore
         // semantics.
+    	lock = new ReentrantLock(fair);
+    	isZero=lock.newCondition();
+    	availablePermits=permits;
     }
 
     /**
@@ -42,6 +48,16 @@ public class SimpleSemaphore {
      */
     public void acquire() throws InterruptedException {
         // TODO - you fill in here.
+    	final ReentrantLock lock = this.lock;
+    	lock.lockInterruptibly();
+    	try{
+    		while(availablePermits()==0){
+    			isZero.await();
+    		}
+    		availablePermits--;
+    	}finally{
+    		lock.unlock();
+    	}
     }
 
     /**
@@ -50,6 +66,16 @@ public class SimpleSemaphore {
      */
     public void acquireUninterruptibly() {
         // TODO - you fill in here.
+    	final ReentrantLock lock = this.lock;
+    	lock.lock();
+    	try{
+    		while(availablePermits()==0){
+    			isZero.awaitUninterruptibly();
+    		}
+    		availablePermits--;
+    	}finally{
+    		lock.unlock();
+    	}
     }
 
     /**
@@ -57,6 +83,14 @@ public class SimpleSemaphore {
      */
     void release() {
         // TODO - you fill in here.
+    	final ReentrantLock lock = this.lock;
+    	lock.lock();
+    	try{
+    		availablePermits++;
+    		isZero.signalAll();
+    	}finally{
+    		lock.unlock();
+    	}
     }
 
     /**
@@ -65,6 +99,10 @@ public class SimpleSemaphore {
     public int availablePermits() {
         // TODO - you fill in here by changing null to the appropriate
         // return value.
-        return null;
+    	int value =0;
+    	lock.lock();
+    	value=availablePermits;
+    	lock.unlock();
+        return value;
     }
 }
