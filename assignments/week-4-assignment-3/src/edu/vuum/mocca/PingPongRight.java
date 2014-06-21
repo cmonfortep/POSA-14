@@ -30,7 +30,6 @@ public class PingPongRight {
      *        and "pong" to the console display.
      */
     public static class PlayPingPongThread extends Thread {
-
         /**
          * Constants to distinguish between ping and pong
          * SimpleSemaphores, if you choose to use an array of
@@ -96,17 +95,17 @@ public class PingPongRight {
         }
 
         /**
-         * Hook method for ping/pong acquire.
+         * Method for acquiring the appropriate SimpleSemaphore.
          */
-        void acquire() {
+        private void acquire() {
             // TODO fill in here
         	mSemaphore[FIRST_SEMA].acquireUninterruptibly();
         }
 
         /**
-         * Hook method for ping/pong release.
+         * Method for releasing the appropriate SimpleSemaphore.
          */
-        void release() {
+        private void release() {
             // TODO fill in here
         	mSemaphore[SECOND_SEMA].release();
         }
